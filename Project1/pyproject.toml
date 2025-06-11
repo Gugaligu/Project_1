@@ -1,0 +1,53 @@
+[project]
+name = "project1"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Artem Sharanov",email = "sharanov-2014@mail.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django (>=5.2.1,<6.0.0)",
+    "djangorestframework (>=3.16.0,<4.0.0)",
+    "django-cors-headers (>=4.7.0,<5.0.0)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.12"
+django = "^5.2.1"
+
+[tool.ruff]
+# Основные настройки
+line-length = 120  # Максимальная длина строки
+target-version = "py310"  # Минимальная версия Python (py38, py39, py310, py311 и т. д.)
+
+# Включаемые правила (linter)
+lint.select = [
+  "E",   # Ошибки (PEP8)
+  "F",   # Pyflakes
+  "W",   # Предупреждения
+  "I",   # isort (сортировка импортов)
+  "UP",  # pyupgrade (обновление синтаксиса)
+  "C90", # mccabe (сложность кода)
+  "B",   # bugbear (потенциальные баги)
+  "Q",   # flake8-quotes (кавычки)
+  "RUF", # Специфичные для Ruff правила
+]
+
+# Игнорируемые правила
+lint.ignore = ["E501"]  # Игнорировать "line too long"
+
+# Автофикс (--fix)
+lint.unfixable = ["B010"]  # Правила, которые нельзя автоматически исправить
+
+# Настройка isort (сортировка импортов)
+[tool.ruff.lint.isort]
+known-first-party = ["my_project"]  # Имя вашего пакета
