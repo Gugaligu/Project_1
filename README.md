@@ -1,6 +1,6 @@
 # API для бронирования номеров
 ## Запуск проекта:
-Весь проект(API,Postgres,swagger) запускается из файла /Project1 с помощью
+Весь проект(API,Postgres,swagger) запускается с помощью
 __docker-compose up__ но сначала создайте __.env__
 ## Url для работы с апи:
 Документация swagger для тестирования: http://localhost/api/docs/ \
