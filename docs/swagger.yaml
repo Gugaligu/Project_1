@@ -1,0 +1,295 @@
+openapi: 3.0.3
+info:
+  title: Hotel Booking API
+  version: 1.0.0
+  description: API для управления гостиничными номерами и бронированиями
+
+servers:
+  - url: http://localhost/api
+
+tags:
+  - name: Hotel Rooms
+    description: Управление гостиничными номерами
+  - name: Room Reservations
+    description: Управление бронированиями
+
+paths:
+  /rooms/:
+    get:
+      tags:
+        - Hotel Rooms
+      summary: Получить список всех номеров
+      parameters:
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [day_price, date_create]
+          description: Поле для сортировки
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Направление сортировки (по умолчанию asc)
+      responses:
+        200:
+          description: Список номеров
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HotelRoom'
+
+    post:
+      tags:
+        - Hotel Rooms
+      summary: Создать новый номер
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelRoomCreate'
+      responses:
+        201:
+          description: Номер создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  room_number:
+                    type: string
+
+  /rooms/{room_number}/:
+    get:
+      tags:
+        - Hotel Rooms
+      summary: Получить информацию о конкретном номере
+      parameters:
+        - in: path
+          name: room_number
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Детали номера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelRoom'
+
+    put:
+      tags:
+        - Hotel Rooms
+      summary: Обновить информацию о номере
+      parameters:
+        - in: path
+          name: room_number
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelRoom'
+      responses:
+        200:
+          description: Номер обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelRoom'
+
+    delete:
+      tags:
+        - Hotel Rooms
+      summary: Удалить номер
+      parameters:
+        - in: path
+          name: room_number
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Успешное удаление
+
+  /reservation/:
+    get:
+      tags:
+        - Room Reservations
+      summary: Получить список бронирований
+      parameters:
+        - $ref: '#/components/parameters/roomFilter'
+      responses:
+        200:
+          description: Список бронирований
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomReservation'
+
+    post:
+      tags:
+        - Room Reservations
+      summary: Создать бронирование
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomReservationCreate'
+      responses:
+        201:
+          description: Бронирование создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+
+  /reservation/{id}/:
+    get:
+      tags:
+        - Room Reservations
+      summary: Получить детали бронирования
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Детали бронирования
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomReservation'
+
+    put:
+      tags:
+        - Room Reservations
+      summary: Обновить бронирование
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomReservationUpdate'
+      responses:
+        200:
+          description: Бронирование обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomReservation'
+
+    delete:
+      tags:
+        - Room Reservations
+      summary: Удалить бронирование
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Успешное удаление
+
+components:
+  parameters:
+    roomFilter:
+      in: query
+      name: room_number
+      schema:
+        type: string
+      description: Фильтрация по номеру комнаты
+
+  schemas:
+    HotelRoom:
+      type: object
+      properties:
+        room_number:
+          type: string
+        description:
+          type: string
+        day_price:
+          type: number
+          format: float
+
+    HotelRoomCreate:
+      type: object
+      required:
+        - room_number
+        - description
+        - day_price
+      properties:
+        room_number:
+          type: string
+        description:
+          type: string
+        day_price:
+          type: number
+          format: float
+
+    RoomReservation:
+      type: object
+      properties:
+        id:
+          type: integer
+        room_number:
+          type: string
+        date_start:
+          type: string
+          format: date
+        date_end:
+          type: string
+          format: date
+
+    RoomReservationCreate:
+      type: object
+      required:
+        - room_number
+        - date_start
+        - date_end
+      properties:
+        room_number:
+          type: string
+        date_start:
+          type: string
+          format: date
+        date_end:
+          type: string
+          format: date
+
+    RoomReservationUpdate:
+      type: object
+      required:
+        - date_start
+        - date_end
+      properties:
+        date_start:
+          type: string
+          format: date
+        date_end:
+          type: string
+          format: date
